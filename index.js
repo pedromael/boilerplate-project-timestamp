@@ -18,6 +18,35 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+// Adicionando a rota do projeto timestamp
+app.get("/api/:date?", (req, res) => {
+  let dateString = req.params.date;
+
+  let date;
+
+  // Se não foi fornecido dateString, usamos a data atual
+  if (!dateString) {
+    date = new Date();
+  } else {
+    // Se dateString for somente números (timestamp em milissegundos)
+    if (!isNaN(dateString)) {
+      date = new Date(parseInt(dateString));
+    } else {
+      date = new Date(dateString);
+    }
+  }
+
+  // Verifica se a data é inválida
+  if (date.toString() === "Invalid Date") {
+    res.json({ error: "Invalid Date" });
+  } else {
+    res.json({
+      unix: date.getTime(),
+      utc: date.toUTCString()
+    });
+  }
+});
+
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
